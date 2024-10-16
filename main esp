@@ -1,0 +1,35 @@
+//Este código se encarga de recibir la orden del núcleo y regresarle el voltaje medido
+
+//se incluyen las librerías necesarias para el funcionamiento
+#include <Arduino.h>
+#include <stdio.h>
+
+//se asigna el pin para la entrada analógica
+#define pot 35
+
+//se definen las variables a utilizar para la prueba, donde se guardaran el voltaje y la instrucción del núcleo
+char orden; 
+int voltaje = 0;
+long volt;
+//se inicia el monitor serial
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+//se hace la lectura analógica y el mapeo de los valores recibidos por el potenciómetro
+  volt = analogRead(pot);
+  voltaje = map(volt, 0, 4095, 0, 15);
+//Se hace la lectura del valor enviado por el núcleo
+  if(Serial.available() > 0){
+    orden = Serial.read();
+    Serial.println("Hola");
+    delay(10);
+  }
+  //Si la orden tiene un valor de 1, se regresa el voltaje medido y esta regresa a 0
+  if(orden == '1'){
+    Serial.write(voltaje);
+    orden = '0';
+  }
+
+}
